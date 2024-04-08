@@ -32,17 +32,15 @@ public class Main {
         int count = 1;
         while (!q.isEmpty()) {
             int curr = q.poll();
-            if (visited[curr]) {
-                continue;
-            }
-            visited[curr] = true;
-            visitedOrder[curr] = count++;
-            if (list[curr] == null) {
-                continue;
-            }
-            list[curr].sort(Comparator.naturalOrder());
-            for (Object next : list[curr]) {
-                q.offer((int) next);
+            if (!visited[curr]) {
+                visited[curr] = true;
+                visitedOrder[curr] = count++;
+                if (list[curr] != null) {
+                    list[curr].sort(Comparator.naturalOrder());
+                    for (Object next : list[curr]) {
+                        q.offer((int) next);
+                    }
+                }
             }
         }
         StringBuilder sb = new StringBuilder();
