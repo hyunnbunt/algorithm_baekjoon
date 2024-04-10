@@ -27,17 +27,26 @@ public class Main {
         }
         minCost = Integer.MAX_VALUE;
         visited = new boolean[n];
-        for (int i = 0; i < n; i ++) {
-            visited[i] = true;
-            f(i, i, 0, 1);
-            visited[i] = false;
-        }
+        // start from city 0, find a loop that's the most efficient. This loop is always the best way for every starting city.
+        visited[0] = true;
+        f(0, 0, 1);
         System.out.println(minCost);
     }
-    public static void f(int start, int prev, int cost, int visitedCities) {
+
+    /** public static void f(int prev, int cost, int visitedCities) {
+     if (visitedCities == n) {
+     if (visitingCost[prev][0] != 0) {
+     cost += visitingCost[prev][0];
+     minCost = Math.min(cost, minCost);
+     return;
+     }
+     }
+     }
+     */
+    public static void f(int prev, int cost, int visitedCities) {
         if (visitedCities == n) {
-            if (visitingCost[prev][start] != 0) {
-                cost += visitingCost[prev][start];
+            if (visitingCost[prev][0] != 0) {
+                cost += visitingCost[prev][0];
                 minCost = Math.min(cost, minCost);
                 return;
             }
@@ -45,7 +54,7 @@ public class Main {
         for (int i = 0; i < n; i ++) {
             if (visitingCost[prev][i] != 0 && !visited[i]) {
                 visited[i] = true;
-                f(start, i, cost + visitingCost[prev][i], visitedCities + 1);
+                f(i, cost + visitingCost[prev][i], visitedCities + 1);
                 visited[i] = false;
             }
         }
