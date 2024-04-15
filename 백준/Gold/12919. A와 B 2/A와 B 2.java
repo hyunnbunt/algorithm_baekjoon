@@ -1,3 +1,4 @@
+
 import java.io.*;
 import java.util.*;
 public class Main {
@@ -22,31 +23,30 @@ public class Main {
      * => 시간 초과.
      * 길이 50일 때 dfs => 50번. 모두 끝까지 가볼 필요 없이, 미리 끝내는 경우 확인해볼 것.
      * 2^50 번의 dfs. 너무 많다.
-     * t에 s가 포함되어 있거나 s'가 포함되어 있거나. 
+     * t에 s가 포함되어 있거나 s'가 포함되어 있거나.
      */
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String str = br.readLine();
-        String target = br.readLine();
+        String s = br.readLine();
+        String t = br.readLine();
         Stack<String> stack = new Stack<>();
-        stack.push(str);
+        stack.push(s);
         HashSet<String> checked = new HashSet<>();
-        int targetLen = target.length();
+        int l = t.length();
         while (!stack.isEmpty()) {
-            String newStr = stack.pop();
-            if (newStr.equals(target)) {
+            String curr = stack.pop();
+            if (curr.equals(t)) {
                 System.out.println(1);
                 return;
             }
-            // dfs 할 필요 없는 경우 1) target에 newStr이 없는 경우
-            StringBuilder reverseSb = new StringBuilder(newStr);
-            String reversedS = reverseSb.reverse().toString();
-            if (newStr.length() < targetLen && !checked.contains(newStr) && (target.contains(newStr)||target.contains(reversedS))) {
-                checked.add(newStr);
-                stack.push(newStr+'A'); // 새로운 String 생성해서 스택에 push
-                StringBuilder sb = new StringBuilder(newStr).append('B');
-                sb.reverse();
-                stack.push(sb.toString());
+            // dfs 할 필요 없는 경우? 
+            // 1) 이미 확인한 문자열일 경우
+            // 2) target에 curr 또는 curr을 뒤집은 문자열이 포함되지 않은 경우
+            String reversedCurr = new StringBuilder(curr).reverse().toString();
+            if (!checked.contains(curr) && (t.contains(curr)||t.contains(reversedCurr))) {
+                checked.add(curr);
+                stack.push(curr+'A'); // 뒤에 'A'를 붙임
+                stack.push(new StringBuilder(curr).append('B').reverse().toString()); // 뒤에 'B'를 붙이고 뒤집음
             }
         }
         System.out.println(0);
