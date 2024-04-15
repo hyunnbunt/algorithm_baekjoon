@@ -1,7 +1,7 @@
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.sql.Array;
 import java.util.*;
 
 public class Main {
@@ -18,16 +18,16 @@ public class Main {
         int[] nm = Arrays.stream(br.readLine().split(" "))
                 .mapToInt(Integer::parseInt).toArray();
         int n = nm[0]; int m = nm[1]; // n : 정점의 수, m : 간선의 수
-        Map<Integer, List<int[]>> edges = new HashMap<>(); // 정점 번호 1~n
+        ArrayList<ArrayList<int[]>> graph = new ArrayList<>(); // 정점 번호 1~n
+        for (int i = 0; i <= n; i ++) {
+            graph.add(new ArrayList<>());
+        }
         for (int i = 0; i < m; i ++) {
-            int[] path = Arrays.stream(br.readLine().split(" "))
+            int[] vertex = Arrays.stream(br.readLine().split(" "))
                     .mapToInt(Integer::parseInt).toArray();
-            int from = path[0]; int to = path[1]; int cost = path[2]; // 간선의 정보 : 시작 정점, 끝 정점, 비용
-            edges.computeIfAbsent(from, k -> new LinkedList<>()); // 리스트 생성되어있지 않다면 생성
-            edges.get(from).add(new int[]{to, cost});
-            edges.computeIfAbsent(to, k -> new LinkedList<>()); // 리스트 생성되어있지 않다면 생성
-            edges.get(to).add(new int[]{from, cost});
-            // 주의! 간선은 양방향임.
+            int from = vertex[0]; int to = vertex[1]; int cost = vertex[2]; // 간선의 정보 : 시작 정점, 끝 정점, 비용
+            graph.get(from).add(new int[]{to, cost});
+            graph.get(to).add(new int[]{from, cost}); // 간선은 양방향
         }
         PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a->a[1]));
         pq.add(new int[]{1, 0});
@@ -37,16 +37,15 @@ public class Main {
         Arrays.fill(minCost, Integer.MAX_VALUE); // 모든 최소 비용을 초기값 무한으로(정수 최대값) 설정
         while (!pq.isEmpty()) { // 방문하지 않은 정점으로의 간선이 더 이상 없을 때까지 반복
             int[] curr = pq.poll();
-            int prevNode = curr[0];
-            int costToPrevNode = curr[1];
-            for (int[] e : edges.get(prevNode)) {
-                int next = e[0];
-                int costToNextNode = e[1];
-                if (costToNextNode+costToPrevNode< minCost[next]) {
+            int prevNode = curr[0]; int costToPrevNode = curr[1];
+            for (int[] e : graph.get(prevNode)) {
+                int next = e[0]; int costToNextNode = e[1];
+                if (costToNextNode+costToPrevNode < minCost[next]) {
                     minCost[next] = costToNextNode+costToPrevNode;
                     pq.add(new int[]{next, minCost[next]});
                 }
                 // pq에 들어가는 배열 정보 : 업데이트 된 정점 번호와 출발 정점~그 정점까지의 최소 비용.
+                // 업데이트 됐을 때만 추가해야지, 무조건 Math.min 쓰려고 작은 것 업데이트 하고 업데이트 되던 말던 확인 없이 pq에 초과하면 메모리 초과 나지...
             }
         }
         System.out.println(minCost[n]);
