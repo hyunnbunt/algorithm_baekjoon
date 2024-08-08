@@ -49,12 +49,9 @@ class Solution {
                 currC = nextC;
                 move--;
             } else {
-                break;
+                return curr;
             }
             System.out.println(currR + ", " + currC);      
-        }
-        if (move > 0) {
-            return curr;
         }
         return new int[]{currR, currC};
     }
