@@ -1,11 +1,12 @@
 class Solution {
     public int solution(String s) {
         int answer = 0;
-        while (s.length()>0) { //6, 4, 2
-            char start = s.charAt(0); //'b', 'n', 'n'
+        int substringStart = 0;
+        while (substringStart < s.length()) { //6, 4, 2
+            char start = s.charAt(substringStart); //'b', 'n', 'n'
             int numOfStart = 1;
             int numOfOthers = 0;
-            int i = 1;
+            int i = substringStart+1;
             while (numOfStart!=numOfOthers && i < s.length()) {
                 if (s.charAt(i)==start) { 
                     numOfStart++;
@@ -15,9 +16,9 @@ class Solution {
                 i++; // 2, 2, 2
             }
             if (i>=s.length()) {
-                s = "";
+                substringStart = s.length();
             } else {
-                s = s.substring(i); // 'nana', 'na'
+                substringStart = i; // 'nana', 'na'
             }
             answer++;
         }
