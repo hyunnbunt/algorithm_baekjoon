@@ -38,12 +38,17 @@ class Solution {
                 }
             }
             Cell nextStart = null;
-            while (pq.size() > 1 && visited[pq.peek().row][pq.peek().column]) {
-                pq.remove();
-            }
-            if (pq.size() > 1) {
-                nextStart = pq.remove();
+            while (pq.size() > 0) {
+                Cell c = pq.poll();
+                if (c == null) {
+                    break;
+                }
+                if (visited[c.row][c.column]) {
+                    continue;
+                }
+                nextStart = c;
                 costSum += nextStart.ladderCost;
+                break;
             }
             start = nextStart;
         }
@@ -64,29 +69,6 @@ class Solution {
         }
         void setLadderCost(int ladderCost) {
             this.ladderCost = ladderCost;
-        }
-        @Override
-        public String toString() {
-            return "Cell: " + (this.row+1) + ", " + (this.column+1);
-        }
-        @Override
-        public boolean equals(Object o) {
-            // 1. 같은 객체인지 확인
-            if (this == o) {
-                return true;
-            }
-            // 2. null 체크 및 같은 클래스인지 확인
-            if (o == null || this.getClass() != o.getClass()) {
-                return false;
-            }
-            // 3. 필드 값을 비교
-            Cell cell = (Cell) o;
-            return this.row == cell.row && this.column == cell.column;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(this.row, this.column);
         }
     }
 }
