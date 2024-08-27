@@ -1,49 +1,44 @@
 import java.util.*;
 class Solution {
     public int solution(String dartResult) {
-        int[] point = new int[3];
-        int pIdx = -1;
-        // String 순회하며 숫자를 찾을 것 ()
-        for (int i = 0; i < dartResult.length(); i ++) {
-            
-            char curr = dartResult.charAt(i);
-            if (Character.isDigit(curr)) {
-                // 숫자를 찾으면 점수배열의 인덱스를 1 증가시키면서 새로운 배열에 숫자를 저장
-                point[++pIdx] = curr - '0'; // char -> int
-                // 예외 처리 : 숫자가 두 자리인 경우 다음 인덱스도 확인 필요
-                char next = dartResult.charAt(i+1); // 숫자 인덱스가 마지막 인덱스일 수 없으므로 범위체크x
-                if (Character.isDigit(next)) {
-                    point[pIdx] *= 10;
-                    point[pIdx] += next - '0';
-                    i++;
-                }
+        String[] bonusAndOption = dartResult.split("[0-9]");
+        List<String> bList = new ArrayList<>();
+        for (String b : bonusAndOption) {
+            if (b.length() == 0) {
                 continue;
             }
-            if (curr == 'S') {
-                // 싱글 -> 1제곱, 점수에 변화 없음
+            bList.add(b);
+        }
+        String[] points = dartResult.split("[D, S, T, *, #]");
+        List<Integer> pList = new ArrayList<>();
+        for (String p : points) {
+            if (p.length() == 0) {
                 continue;
             }
-            if (curr == 'D') {
-                point[pIdx] = (int) Math.pow(point[pIdx], 2);
+            pList.add(Integer.parseInt(p));
+        }
+        int[] answer = new int[pList.size()];
+        for (int i = 0; i < pList.size(); i ++) {
+            answer[i] = pList.get(i);
+            char bonus = bList.get(i).charAt(0);
+            if (bonus == 'D') {
+                answer[i] = (int) Math.pow(answer[i], 2);
+            } else if (bonus == 'T') {
+                answer[i] = (int) Math.pow(answer[i], 3);
             }
-            if (curr == 'T') {
-                point[pIdx] = (int) Math.pow(point[pIdx], 3);
-            }
-            if (curr == '*') {
-                point[pIdx] *= 2;
-                if (pIdx > 0) {
-                    point[pIdx-1] *= 2;
+            // 옵션 있다면 적용
+            if (bList.get(i).length() > 1) {
+                char option = bList.get(i).charAt(1);
+                if (option == '*') {
+                    answer[i] *= 2;
+                    if (i > 0) {
+                        answer[i-1] *= 2;
+                    }
+                } else if (option == '#') {
+                    answer[i] *= -1;
                 }
             }
-            if (curr == '#') {
-                point[pIdx] *= -1;
-            }
-            System.out.println(Arrays.toString(point));
         }
-        int answer = 0;
-        for (int p : point) {
-            answer += p;
-        }
-        return answer;
+        return Arrays.stream(answer).sum();
     }
 }
