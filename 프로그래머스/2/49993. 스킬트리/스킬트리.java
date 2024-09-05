@@ -1,18 +1,23 @@
-import java.util.*;
-
 class Solution {
     public int solution(String skill, String[] skill_trees) {
         int answer = 0;
-        ArrayList<String> skillTrees = new ArrayList<String>(Arrays.asList(skill_trees));
-        //ArrayList<String> skillTrees = new ArrayList<String>();
-        Iterator<String> it = skillTrees.iterator();
-
-        while (it.hasNext()) {
-            if (skill.indexOf(it.next().replaceAll("[^" + skill + "]", "")) != 0) {
-                it.remove();
+        for (String skillTree : skill_trees) {
+            int learningIdx = 0;
+            boolean isAble = true;
+            for (char curSkill : skillTree.toCharArray()) {
+                int skillIdx = skill.indexOf(curSkill);
+                if (skillIdx == -1)
+                    continue;
+                else if (skillIdx == learningIdx)
+                    learningIdx++;
+                else {
+                    isAble = false;
+                    break;
+                }
             }
+            if (isAble)
+                answer++;
         }
-        answer = skillTrees.size();
         return answer;
     }
 }
