@@ -1,8 +1,8 @@
 import java.util.*;
 public class Solution {
     public int solution(int n) {
-        int ans = 0;
-        while (n >= 2) {
+        int ans = 1;
+        while (n > 1) {
             if (n % 2 == 1) {
                 n--;
                 ans++;
@@ -11,6 +11,6 @@ public class Solution {
                 n /= 2;
             }
         }
-        return ans + n;
+        return ans;
     }
 }
